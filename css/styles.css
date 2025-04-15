@@ -29,14 +29,16 @@ body {
   display: flex;
   justify-content: center;
   gap: 0.625rem;
-  padding: 1rem;
+  padding: 8px;
 }
 
 .box{
   width: 3.125rem;
   height: 3.125rem;
   border: 1px solid white;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .margin{
   margin-bottom: 0.625rem;
