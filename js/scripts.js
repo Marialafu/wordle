@@ -1,5 +1,6 @@
 const inputBarElement = document.getElementById('input-bar');
 const gameBoardElement = document.getElementById('game-board');
+const formElement = document.getElementById('form')
 
 const allWords = ['zara', 'hola'];
 
@@ -9,7 +10,6 @@ const selectAleatoryWord = () => {
   return aleatoryWord;
 };
 console.log(selectAleatoryWord());
-
 
 const createGameBoard = () => {
   for (let i = 0; i < 5; i++){
@@ -25,23 +25,24 @@ const createGameBoard = () => {
 }
 createGameBoard();
 
-const includeLettersInBox = () => {
 
-    for (let i = 0; i < inputBarElement.value.length; i++){
-      gameBoardElement.children[0].children[i].textContent = inputBarElement.value[i]
-    }
+const includeLettersInBox = () => {
+  let inputWordLength = inputBarElement.value.length
+  for (let i = 0; i < inputWordLength; i++){
+    gameBoardElement.children[0].children[i].textContent = inputBarElement.value[i]
+  }
 }
 
-const includeWord = () => {
-  console.log(gameBoardElement.children[0]);
-  
-  if (event.key === 'Enter' && inputBarElement.value.length === gameBoardElement.children[0].length){
+const includeWord = (event) => {
+  event.preventDefault()
+
+  if (inputBarElement.value.length === gameBoardElement.children[0].childElementCount){
     includeLettersInBox()
-    }
-    
-    
-  }
-  
+  } else {
+    const wrongMessage = document.createElement('p');
+    wrongMessage.textContent = `Word must have ${inputBarElement.value.length} letters`
+    gameBoardElement.append(wrongMessage);
+  } 
+}
 
-
-document.addEventListener('keypress', includeWord)
+document.addEventListener('submit', includeWord)
