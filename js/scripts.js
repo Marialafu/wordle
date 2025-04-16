@@ -1,69 +1,83 @@
 const inputBarElement = document.getElementById('input-bar');
 const gameBoardElement = document.getElementById('game-board');
-const formElement = document.getElementById('form')
+const formElement = document.getElementById('form');
+const messageElement = document.getElementById('message');
 
-//intentos como variable para poder cambiarlo?
-const allWords = ['zara', 'hola'];
-const characters = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'
+const allWords = ['zara'];
+const characters = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+
+let secretWord = '';
+let tries = 5;
+let currentRow = 0;
 
 const selectAleatoryWord = () => {
   const aleatoryNumber = Math.floor(Math.random() * allWords.length);
   const aleatoryWord = allWords[aleatoryNumber];
   return aleatoryWord;
 };
-console.log(selectAleatoryWord());
 
 const createGameBoard = () => {
-  for (let i = 0; i < 5; i++){
+  secretWord = selectAleatoryWord();
+
+  for (let i = 0; i < tries; i++) {
     const boxGroup = document.createElement('div');
-    boxGroup.classList.add('container')
-   for (let i = 0; i < selectAleatoryWord().length; i++) {
+    boxGroup.classList.add('container');
+    for (let j = 0; j < secretWord.length; j++) {
       const boxElement = document.createElement('div');
       boxElement.classList.add('box');
       boxGroup.append(boxElement);
     }
     gameBoardElement.append(boxGroup);
   }
-}
+};
 createGameBoard();
 
-
 const includeLettersInBox = () => {
-  let inputWordLength = inputBarElement.value.length
-  let childrenValue = 0;
-  for (let i = 0; i < inputWordLength; i++){
-    //como cambiar el children según la palabra ya esté completa
-    gameBoardElement.children[childrenValue].children[i].textContent = inputBarElement.value[i]
-    childrenValue++
+  for (let i = 0; i < secretWord.length; i++) {
+    gameBoardElement.children[currentRow].children[i].textContent =
+      inputBarElement.value[i];
   }
-}
+  currentRow++;
+};
 
-const includeWord = (event) => {
-  event.preventDefault()
-  const wordLength = gameBoardElement.children[0].childElementCount
+const includeWord = event => {
+  event.preventDefault();
 
-  if (inputBarElement.value.length === wordLength){
-    includeLettersInBox()
+  if (inputBarElement.value.length === secretWord.length) {
+    messageElement.textContent = '';
   } else {
-    const wrongMessage = document.createElement('p');
-    wrongMessage.textContent = `Word must have ${wordLength} letters`
-    gameBoardElement.append(wrongMessage);
+    messageElement.textContent = `Word must have ${secretWord.length} letters`;
   }
-  confirmValidateCharacters()
-}
+  confirmValidateCharacters();
+  event.target.reset();
+};
 
 const confirmValidateCharacters = () => {
-  //cambiar según el children
-  const boxElement = gameBoardElement.children[0].children[0]
-  
-  
-  for (const character of inputBarElement.value.toUpperCase()){  
-    if (characters.includes(character)){
-      boxElement.classList.add('box-yellow');
-      console.dir(boxElement)
+  const charactersSecretWord = secretWord.split('');
+  const charactersInputWord = inputBarElement.value.split('');
+
+  for (let i = 0; i < secretWord.length; i++) {
+    //letra correcta
+    if (charactersInputWord[i] === charactersSecretWord[i]) {
+      gameBoardElement.children[currentRow].children[i].classList.add(
+        'box-green'
+      );
+    } //BUCLE para leer la palabra
+    else if (
+      //la letra no está puesta ya
+      secretWord.includes(charactersInputWord[i])
+    ) {
+      gameBoardElement.children[currentRow].children[i].classList.add(
+        'box-yellow'
+      );
+    } else {
+      gameBoardElement.children[currentRow].children[i].classList.add(
+        'box-grey'
+      );
     }
   }
-  
-}
 
-formElement.addEventListener('submit', includeWord)
+  includeLettersInBox();
+};
+
+formElement.addEventListener('submit', includeWord);
