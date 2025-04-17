@@ -75,8 +75,7 @@ const confirmValidateCharacters = () => {
   } else if (
     !gameBoardElement.children[currentRow].children[i].classList.contains('box-green') && 
     !gameBoardElement.children[currentRow].children[i].classList.contains('box-yellow'))
-    {
-      gameBoardElement.children[currentRow].children[i].classList.add(
+    {gameBoardElement.children[currentRow].children[i].classList.add(
       'box-grey');
    }
   }
