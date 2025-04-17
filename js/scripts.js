@@ -59,27 +59,25 @@ const includeWord = event => {
 const confirmValidateCharacters = () => {
 
   for (let i = 0; i < secretWord.length; i++) {
-    //si el cambio de letra se ejecuta dentro del if no funciona
-    //si es fuera tampoco
-    //fuera del for no entiende el i
     if (inputBarElement.value[i] === secretWord[i]) {
       gameBoardElement.children[currentRow].children[i].classList.add(
         'box-green'
       );
-    //muy enrevesado, replace no funciona con un string.
-    let dividedSecretWord = secretWord.split('')
-    dividedSecretWord[i] = '*'
-    secretWord = dividedSecretWord.join('')
-    } 
+      secretWord.replace(i, '*')
+    }
   }
-  //como decirle que la que está rosa no la toque
+  
   for (let i = 0; i < secretWord.length; i++){
-  if (secretWord.includes(inputBarElement.value[i])) {
+  if (secretWord.includes(inputBarElement.value[i]) && !gameBoardElement.children[currentRow].children[i].classList.contains('box-green')) {
   gameBoardElement.children[currentRow].children[i].classList.add(
   'box-yellow')
-  } else {
-   gameBoardElement.children[currentRow].children[i].classList.add(
-   'box-grey');
+  
+  } else if (
+    !gameBoardElement.children[currentRow].children[i].classList.contains('box-green') && 
+    !gameBoardElement.children[currentRow].children[i].classList.contains('box-yellow'))
+    {
+      gameBoardElement.children[currentRow].children[i].classList.add(
+      'box-grey');
    }
   }
 
