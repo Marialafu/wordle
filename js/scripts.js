@@ -4,7 +4,9 @@ const formElement = document.getElementById('form');
 const messageElement = document.getElementById('message');
 const winOrLose = document.getElementById('win-or-lose')
 
-const allWords = ['zara'];
+const allWords = [  
+  'antiguedad'
+];
 
 let secretWord = '';
 let tries = 5;
@@ -32,59 +34,6 @@ const createGameBoard = () => {
 };
 createGameBoard();
 
-const includeLettersInBox = () => {
-  for (let i = 0; i < secretWord.length; i++) {
-    gameBoardElement.children[currentRow].children[i].textContent =
-      inputBarElement.value[i];
-  }
-  currentRow++;
-};
-
-const includeWord = event => {
-  event.preventDefault();
-  
-
-  if (inputBarElement.value.length === secretWord.length) {
-    messageElement.textContent = '';
-    //sumando aquí la row no funciona se sigue pintando
-  } else {
-    messageElement.textContent = `Word must have ${secretWord.length} letters`;
-    //poner que no pase a la siguiente fila, que se mantenga en esa.
-  }
-  
-  confirmValidateCharacters();
-  event.target.reset();
-};
-
-const confirmValidateCharacters = () => {
-
-  for (let i = 0; i < secretWord.length; i++) {
-    if (inputBarElement.value[i] === secretWord[i]) {
-      gameBoardElement.children[currentRow].children[i].classList.add(
-        'box-green'
-      );
-      secretWord.replace(i, '*')
-    }
-  }
-  
-  for (let i = 0; i < secretWord.length; i++){
-  if (secretWord.includes(inputBarElement.value[i]) && !gameBoardElement.children[currentRow].children[i].classList.contains('box-green')) {
-  gameBoardElement.children[currentRow].children[i].classList.add(
-  'box-yellow')
-  
-  } else if (
-    !gameBoardElement.children[currentRow].children[i].classList.contains('box-green') && 
-    !gameBoardElement.children[currentRow].children[i].classList.contains('box-yellow'))
-    {gameBoardElement.children[currentRow].children[i].classList.add(
-      'box-grey');
-   }
-  }
-
-  includeLettersInBox();
-  defineIfWinOrLose();
-};
-
-
 const defineIfWinOrLose = () => {
   
   if (inputBarElement.value === secretWord){
@@ -96,5 +45,73 @@ const defineIfWinOrLose = () => {
   }
   
 }
+
+const includeLettersInBox = () => {
+  for (let i = 0; i < secretWord.length; i++) {
+    gameBoardElement.children[currentRow].children[i].textContent =
+      inputBarElement.value[i];
+  }
+  currentRow++;
+};
+
+const confirmValidateCharacters = () => {
+  let changedWord = secretWord
+  console.log(changedWord);
+  
+
+  for (let i = 0; i < secretWord.length; i++) {
+    let inputLetter = inputBarElement.value[i]
+    const currentBox = gameBoardElement.children[currentRow].children[i]
+
+    if (inputLetter === changedWord[i]) {
+      currentBox.classList.add(
+        'box-green'
+      );
+      changedWord = changedWord.replace(changedWord[i], '*')
+    }
+  }
+  console.log(changedWord);
+  
+  
+  for (let i = 0; i < secretWord.length; i++){
+    let inputLetter = inputBarElement.value[i]
+    const currentBox = gameBoardElement.children[currentRow].children[i]
+
+  if (!currentBox.classList.contains('box-green')){
+
+    if (changedWord.includes(inputLetter)) {
+    currentBox.classList.add(
+    'box-yellow')
+
+    //explicación
+    const currentLetterPosition = changedWord.indexOf(inputLetter)
+    const currentLetter = changedWord.charAt(currentLetterPosition)
+    changedWord = changedWord.replace(currentLetter, '*')
+    console.log(changedWord);
+    
+    
+    } else if (
+      !currentBox.classList.contains('box-green'))
+      {currentBox.classList.add('box-grey')}
+    }
+
+}
+  includeLettersInBox();
+  defineIfWinOrLose();
+};
+
+const includeWord = event => {
+  event.preventDefault();
+
+  if (inputBarElement.value.length === secretWord.length) {
+    messageElement.textContent = '';
+    confirmValidateCharacters();
+  } else {
+    messageElement.textContent = `Word must have ${secretWord.length} letters`;
+  }
+  
+  event.target.reset();
+};
+
 
 formElement.addEventListener('submit', includeWord);
